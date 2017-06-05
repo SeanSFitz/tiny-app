@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>TinyApp</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+</head>
+<body>
+<%- include('partials/_header') %>
+  <table>
+    <thead>
+      <tr>
+        <th>Shortened</th>
+        <th>Original</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (let url in urls) { %>
+        <tr>
+          <td><%= url %></td>
+          <td><%= urls[url] %></td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+  <a link="#">Shortern a new URL</a>
+</body>
+</html>
