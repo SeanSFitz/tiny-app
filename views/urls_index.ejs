@@ -3,11 +3,12 @@
 <head>
   <title>TinyApp</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
+  <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
 <%- include('partials/_header') %>
-  <table>
+  <h1>Currently Indexed URLs</h1>
+  <table class="table table-striped">
     <thead>
       <tr>
         <th>Shortened</th>
@@ -17,12 +18,16 @@
     <tbody>
       <% for (let url in urls) { %>
         <tr>
-          <td><%= url %></td>
+          <td><a href="urls/<%= url %>"><%= url %></a></td>
           <td><%= urls[url] %></td>
+          <td><form method="POST" action="/urls/<%= url %>/delete">
+                <input type="submit" value="Delete">
+              </form>
+          </td>
         </tr>
       <% } %>
     </tbody>
   </table>
-  <a link="#">Shortern a new URL</a>
+  <a href="/new">Shortern a new URL</a>
 </body>
 </html>

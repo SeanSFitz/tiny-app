@@ -1,0 +1,13 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+  text-align: table;
+  background: rgba(150, 232, 255,0.7);
+}
+
+.navbar {
+  background: rgba(255, 255, 255, 1);
+}
+
+.jumbotron {
+  background: rgba(255,255,255, 1);
+}
