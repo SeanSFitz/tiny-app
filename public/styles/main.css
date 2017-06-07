@@ -11,3 +11,12 @@ body {
 .jumbotron {
   background: rgba(255,255,255, 1);
 }
+
+.FullPageContainer {
+  padding: 5pt;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+
+}

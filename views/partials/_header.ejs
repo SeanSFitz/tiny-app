@@ -12,19 +12,20 @@
       </li>
     </ul>
 
-    <% if (!username) {%>
+    <% if (!user.id) {%>
     <form action="/login" method="POST" class="form-inline">
     <div class="form-group pull-right">
-      <input class="form-control" id="username" type="text" name="username" placeholder="Enter username..." style="width: 300px">
+      <input class="form-control" type="email" type="text" name="email" placeholder="E-mail" style="width: 300px">
+      <input class="form-control" type="password" type="text" name="password" placeholder="Password" style="width: 300px">
       <button type="submit" class="btn btn-default">Login</button>
     </div>
     </form>
     <% } %>
 
-    <% if (username) {%>
+    <% if (user.id) {%>
     <form action="/logout" method="POST" class="form-inline">
     <div class="form-group pull-right">
-      <label><%= username %></label>
+      <label><%= user.email%></label>
       <button type="submit" class="btn btn-default">Logout</button>
     </div>
     </form>
