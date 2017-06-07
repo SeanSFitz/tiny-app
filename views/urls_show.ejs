@@ -2,12 +2,17 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="/styles/main.css">
   </head>
 
 <body>
-<%- include('partials/_header') %>
-    Shortened URL for <%= longURL %>
-    <%= shortURL %>
+<% include partials/_header %>
+    <h1>Shortened URL: <%= shortURL %></h1>
+    <h2>Original URL: <a href="<%= longURL %>"><%= longURL %></a></h2>
+    <form action="/urls/<%= shortURL %>" method="POST" style="margin:150px;">
+      <label for="longURL">Enter a URL:</label>
+      <input id="longURL" type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px">
+      <input type="submit" value="Update">
+    </form>
 </body>
 </html>
