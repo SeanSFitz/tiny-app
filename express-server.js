@@ -34,6 +34,24 @@ function isEmailInUse(email) {
   }
 };
 
+function belongsToUser(user, shortURL) {
+  if (urlDatabase[shortURL].userID === user) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+function usersURLs (user) {
+  let filteredURLs = {};
+  for (let url in urlDatabase) {
+    if (urlDatabase[url].userID === user) {
+      filteredURLs[url] = urlDatabase[url];
+    }
+  }
+  return filteredURLs;
+};
+
 app.set("view engine", "ejs");
 
 const bodyParser = require("body-parser");
@@ -45,8 +63,14 @@ app.use(cookieParser());
 app.use(express.static('public'));
 
 let urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    longURL: "http://www.lighthouselabs.ca",
+    userID: "b24x"
+  },
+  "9sm5xK": {
+    longURL: "http://www.google.com",
+    userID: "B5x22"
+  }
 };
 
 let users = {
@@ -76,7 +100,7 @@ app.get("/urls", (req, res) => {
     return;
   }
   let templateVars = {
-    urls: urlDatabase,
+    urls: usersURLs(req.cookies.userID),
     user: req.cookies.userID ? users[req.cookies.userID] : ''
   };
   res.render("urls_index", templateVars);
@@ -88,9 +112,14 @@ app.get("/urls/:id", (req, res) => {
     res.redirect('/');
     return;
   };
+  if (!belongsToUser(req.cookies.userID, req.params.id)) {
+    res.status(400).send("This link doesn't belong to you!");
+    return;
+  };
+
   let templateVars = {
     shortURL: req.params.id,
-    longURL: urlDatabase[req.params.id],
+    longURL: urlDatabase[req.params.id].longURL,
     user: req.cookies.userID ? users[req.cookies.userID] : ''
   };
   res.render("urls_show", templateVars);
@@ -117,25 +146,36 @@ app.get("/register", (req, res) => {
 
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
-  urlDatabase[shortURL] = req.body.longURL;
+  urlDatabase[shortURL] = {
+    longURL: req.body.longURL,
+    userID: req.cookies.userID
+  };
   console.log(urlDatabase);
   res.redirect(`/urls/${shortURL}`);
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
+  let longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  console.log(urlDatabase);
+  if (!belongsToUser(req.cookies.userID, req.params.shortURL)) {
+    res.status(400);
+    res.redirect(`/urls`);
+    return;
+  };
   delete urlDatabase[req.params.shortURL];
-  console.log(urlDatabase);
   res.redirect(`/urls`);
 });
 
 app.post("/urls/:shortURL", (req, res) => {
-  urlDatabase[req.params.shortURL] = req.body.longURL;
+  if (!belongsToUser(req.cookies.userID, req.params.shortURL)) {
+    res.status(400);
+    res.redirect(`/urls/${req.params.shortURL}`);
+    return;
+  };
+  urlDatabase[req.params.shortURL].longURL = req.body.longURL;
   res.redirect(`/urls/${req.params.shortURL}`);
 });
 
