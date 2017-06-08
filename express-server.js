@@ -20,7 +20,7 @@ function getUserInfo(email) {
 };
 
 function isUserLoggedIn(req) {
-  if (req.cookies.userID) {
+  if (req.session.userID) {
     return true;
   } else {
     return false;
@@ -67,8 +67,11 @@ app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-const cookieParser = require('cookie-parser')
-app.use(cookieParser());
+var cookieSession = require('cookie-session');
+app.use(cookieSession({
+  name: 'userID',
+  secret: 'sean'
+}));
 
 app.use(express.static('public'));
 
@@ -105,7 +108,7 @@ let users = {
 
 app.get("/", (req, res) => {
   let templateVars = {
-    user: req.cookies.userID ? users[req.cookies.userID] : ''
+    user: req.session.userID ? users[req.session.userID] : ''
   };
   res.render("home", templateVars);
 });
@@ -117,8 +120,8 @@ app.get("/urls", (req, res) => {
     return;
   }
   let templateVars = {
-    urls: usersURLs(req.cookies.userID),
-    user: req.cookies.userID ? users[req.cookies.userID] : ''
+    urls: usersURLs(req.session.userID),
+    user: req.session.userID ? users[req.session.userID] : ''
   };
   res.render("urls_index", templateVars);
 });
@@ -129,7 +132,7 @@ app.get("/urls/:id", (req, res) => {
     res.redirect('/');
     return;
   };
-  if (!belongsToUser(req.cookies.userID, req.params.id)) {
+  if (!belongsToUser(req.session.userID, req.params.id)) {
     res.status(400).send("This link doesn't belong to you!");
     return;
   };
@@ -137,7 +140,7 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id].longURL,
-    user: req.cookies.userID ? users[req.cookies.userID] : ''
+    user: req.session.userID ? users[req.session.userID] : ''
   };
   res.render("urls_show", templateVars);
 });
@@ -149,14 +152,14 @@ app.get("/new", (req, res) => {
     return;
   };
   let templateVars = {
-    user: req.cookies.userID ? users[req.cookies.userID] : ''
+    user: req.session.userID ? users[req.session.userID] : ''
   };
   res.render("urls_new", templateVars);
 });
 
 app.get("/register", (req, res) => {
     let templateVars = {
-    user: req.cookies.userID ? users[req.cookies.userID] : ''
+    user: req.session.userID ? users[req.session.userID] : ''
   };
   res.render("register", templateVars);
 });
@@ -165,7 +168,7 @@ app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = {
     longURL: makeValidURL(req.body.longURL),
-    userID: req.cookies.userID
+    userID: req.session.userID
   };
   console.log(urlDatabase);
   res.redirect(`/urls/${shortURL}`);
@@ -177,7 +180,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  if (!belongsToUser(req.cookies.userID, req.params.shortURL)) {
+  if (!belongsToUser(req.session.userID, req.params.shortURL)) {
     res.status(400);
     res.redirect(`/urls`);
     return;
@@ -187,7 +190,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 app.post("/urls/:shortURL", (req, res) => {
-  if (!belongsToUser(req.cookies.userID, req.params.shortURL)) {
+  if (!belongsToUser(req.session.userID, req.params.shortURL)) {
     res.status(400);
     res.redirect(`/urls/${req.params.shortURL}`);
     return;
@@ -208,12 +211,12 @@ app.post("/login", (req, res) => {
     res.redirect('/');
     return;
   }
-  res.cookie('userID', userInfo.id);
+  req.session.userID = userInfo.id;
   res.redirect(`/urls`);
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie('userID');
+  req.session = null;
   res.redirect(`/`);
 });
 
@@ -230,9 +233,8 @@ app.post("/register", (req, res) => {
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 10)
   };
-  res.cookie('userID', newID);
+  req.session.userID = newID;
   console.log(users);
-  console.log(res.cookie);
   res.redirect(`/urls`);
 });
 
