@@ -126,6 +126,18 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+app.get("/urls/new", (req, res) => {
+  if (!isUserLoggedIn(req)) {
+    res.status(302);
+    res.redirect('/');
+    return;
+  };
+  let templateVars = {
+    user: req.session.userID ? users[req.session.userID] : ''
+  };
+  res.render("urls_new", templateVars);
+});
+
 app.get("/urls/:id", (req, res) => {
   if (!isUserLoggedIn(req)) {
     res.status(302);
@@ -145,17 +157,7 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.get("/new", (req, res) => {
-  if (!isUserLoggedIn(req)) {
-    res.status(302);
-    res.redirect('/');
-    return;
-  };
-  let templateVars = {
-    user: req.session.userID ? users[req.session.userID] : ''
-  };
-  res.render("urls_new", templateVars);
-});
+
 
 app.get("/register", (req, res) => {
     let templateVars = {
@@ -170,7 +172,6 @@ app.post("/urls", (req, res) => {
     longURL: makeValidURL(req.body.longURL),
     userID: req.session.userID
   };
-  console.log(urlDatabase);
   res.redirect(`/urls/${shortURL}`);
 });
 
@@ -234,7 +235,6 @@ app.post("/register", (req, res) => {
     password: bcrypt.hashSync(req.body.password, 10)
   };
   req.session.userID = newID;
-  console.log(users);
   res.redirect(`/urls`);
 });
 
