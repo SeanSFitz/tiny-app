@@ -53,10 +53,11 @@ function usersURLs (user) {
   return filteredURLs;
 };
 
+const validURL = /^https?:\/\//;
 
 function makeValidURL (url) {
-  if ((url.slice(0,7) !== "https://") || (url.slice(0,6) !== "http://"))  {
-    url = "https://" + url;
+  if (!validURL.test(url))  {
+    url = "http://" + url;
   }
   return url;
 };
