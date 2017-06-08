@@ -14,7 +14,7 @@
 
     <% if (!user.id) {%>
     <form action="/login" method="POST" class="form-inline">
-    <div class="form-group pull-right">
+    <div class="form-group pull-right" style="margin-top: 5pt; margin-right: 5pt">
       <input class="form-control" type="email" type="text" name="email" placeholder="E-mail" style="width: 300px">
       <input class="form-control" type="password" type="text" name="password" placeholder="Password" style="width: 300px">
       <button type="submit" class="btn btn-default">Login</button>
@@ -24,7 +24,7 @@
 
     <% if (user.id) {%>
     <form action="/logout" method="POST" class="form-inline">
-    <div class="form-group pull-right">
+    <div class="form-group pull-right" style="margin-top: 5pt; margin-right: 5pt">
       <label><%= user.email%></label>
       <button type="submit" class="btn btn-default">Logout</button>
     </div>

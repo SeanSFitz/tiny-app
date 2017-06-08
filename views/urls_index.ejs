@@ -7,6 +7,7 @@
 </head>
 <body>
 <%- include('partials/_header') %>
+  <div class="FullPageContainer text-center">
   <h1>Currently Indexed URLs</h1>
   <table class="table table-striped">
     <thead>
@@ -22,19 +23,19 @@
           <td><a href="<%= urls[url] %>"><%= urls[url] %></a></td>
           <td>
             <form method="GET" action="/urls/<%= url %>">
-              <input type="submit" value="Edit">
+              <button class="btn btn-default" type="submit">Edit <span class="glyphicon glyphicon-pencil"></span></button>
             </form>
 
           </td>
           <td>
             <form method="POST" action="/urls/<%= url %>/delete">
-                <input type="submit" value="Delete">
+                <button class="btn btn-default" type="submit">Delete <span class="glyphicon glyphicon-trash"></span></button>
             </form>
           </td>
         </tr>
       <% } %>
     </tbody>
   </table>
-  <a href="/new">Shortern a new URL</a>
+  </div>
 </body>
 </html>

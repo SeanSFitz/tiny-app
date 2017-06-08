@@ -18,5 +18,17 @@ body {
   margin-left: auto;
   margin-right: auto;
   display: block;
+  background-color: white;
+  border-radius: 10pt;
 
+}
+
+.white-bg {
+  background-color: white;
+  padding:  5pt;
+  border-radius: 4pt;
+}
+
+.tiny {
+  font-size: 10pt;
 }

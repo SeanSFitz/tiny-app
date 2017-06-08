@@ -46,7 +46,10 @@ let users = {
 };
 
 app.get("/", (req, res) => {
-  res.render("home");
+  let templateVars = {
+    user: req.cookies.userID ? users[req.cookies.userID] : ''
+  };
+  res.render("home", templateVars);
 });
 
 app.get("/urls", (req, res) => {
@@ -75,7 +78,7 @@ app.get("/new", (req, res) => {
 
 app.get("/register", (req, res) => {
     let templateVars = {
-    userID: req.cookies ? req.cookies.userID : ''
+    user: req.cookies.userID ? users[req.cookies.userID] : ''
   };
   res.render("register", templateVars);
 });
@@ -107,13 +110,13 @@ app.post("/urls/:shortURL", (req, res) => {
 app.post("/login", (req, res) => {
   let userInfo = getUserInfo(req.body.email);
   if (!userInfo) {
-    res.end();
     res.status(403);
+    res.redirect('/');
     return;
   }
   if (userInfo.password !== req.body.password) {
-    res.end();
     res.status(403);
+    res.redirect('/');
     return;
   }
   res.cookie('userID', userInfo.id);
@@ -122,7 +125,7 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie('userID');
-  res.redirect(`/urls`);
+  res.redirect(`/`);
 });
 
 app.post("/register", (req, res) => {

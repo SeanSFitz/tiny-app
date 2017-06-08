@@ -1,0 +1,11 @@
+  <div class="FullPageContainer text-center">
+    <h1>Welcome back <%= user.email %>!</h1>
+    <a href="/urls" class="btn btn-default">View your tiny links here!</a>
+
+    <form action="/logout" method="POST">
+    <div class="form-group" style="margin:10pt">
+      <button type="submit" class="btn btn-default">Logout</button>
+    </div>
+    </form>
+
+  </div>
