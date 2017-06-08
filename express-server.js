@@ -1,8 +1,9 @@
-var express = require("express");
-var randomString = require('random-string');
-var validator = require('validator');
-var app = express();
-var PORT = process.env.PORT || 8080; // default port 8080
+const express = require("express");
+const randomString = require('random-string');
+const validator = require('validator');
+const bcrypt = require('bcrypt');
+const app = express();
+const PORT = process.env.PORT || 8080; // default port 8080
 
 function generateRandomString() {
   const urlLength = 6;
@@ -74,16 +75,21 @@ let urlDatabase = {
 };
 
 let users = {
-  "b24x": {
-    id: "b24x",
-    email: "b24@gmail.com",
-    password: "purple-monkey-dinosaur"
-  },
-  "B5x22": {
-    id: "B5x22",
-    email: "sean.s.fitz@gmail.com",
-    password: "sean"
-  }
+  "DU8ks8":
+   { id: 'DU8ks8',
+     email: 'fitzpatrick_ss@yahoo.ca',
+     password: '$2a$10$2RznB09XBn67PIh36B39J.gDw8u5leoHv0bU5gwXsKhhwOvZBZKMa'
+   },
+  "QbiDb4":
+   { id: 'QbiDb4',
+     email: 'sean.s.fitz@gmail.com',
+     password: '$2a$10$u1metLKK6PlqoLTODbyaBuIvlPNi9ehZ8u9VxWS3MsIFpWmHe0ppu'
+   },
+  "32ysdZ":
+   { id: '32ysdZ',
+     email: 'test@test.com',
+     password: '$2a$10$nDD2sTMN.o8eODSOuImlSe366fE9MYfH/lXkKWdcOWoGduzaoHrp6'
+   }
 };
 
 app.get("/", (req, res) => {
@@ -186,7 +192,7 @@ app.post("/login", (req, res) => {
     res.redirect('/');
     return;
   }
-  if (userInfo.password !== req.body.password) {
+  if (!bcrypt.compareSync(req.body.password, userInfo.password)) {
     res.status(403);
     res.redirect('/');
     return;
@@ -211,7 +217,7 @@ app.post("/register", (req, res) => {
   users[newID] = {
     id: newID,
     email: req.body.email,
-    password: req.body.password
+    password: bcrypt.hashSync(req.body.password, 10)
   };
   res.cookie('userID', newID);
   console.log(users);
