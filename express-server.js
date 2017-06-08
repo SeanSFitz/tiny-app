@@ -1,5 +1,6 @@
 var express = require("express");
 var randomString = require('random-string');
+var validator = require('validator');
 var app = express();
 var PORT = process.env.PORT || 8080; // default port 8080
 
@@ -7,7 +8,7 @@ function generateRandomString() {
   const urlLength = 6;
 
   return randomString({length: urlLength});
-}
+};
 
 function getUserInfo(email) {
   for (let user in users) {
@@ -15,7 +16,23 @@ function getUserInfo(email) {
       return users[user];
     }
   }
-}
+};
+
+function isUserLoggedIn(req) {
+  if (req.cookies.userID) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+function isEmailInUse(email) {
+  if(getUserInfo(email)) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 app.set("view engine", "ejs");
 
@@ -53,6 +70,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
+  if (!isUserLoggedIn(req)) {
+    res.status(302);
+    res.redirect('/');
+    return;
+  }
   let templateVars = {
     urls: urlDatabase,
     user: req.cookies.userID ? users[req.cookies.userID] : ''
@@ -61,6 +83,11 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
+  if (!isUserLoggedIn(req)) {
+    res.status(302);
+    res.redirect('/');
+    return;
+  };
   let templateVars = {
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id],
@@ -70,6 +97,11 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/new", (req, res) => {
+  if (!isUserLoggedIn(req)) {
+    res.status(302);
+    res.redirect('/');
+    return;
+  };
   let templateVars = {
     user: req.cookies.userID ? users[req.cookies.userID] : ''
   };
@@ -129,6 +161,12 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
+  if (!validator.isEmail(req.body.email) || req.body.password === '' || isEmailInUse(req.body.email)) {
+    res.status(400);
+    res.redirect('/register');
+    return;
+  };
+
   let newID = generateRandomString();
   users[newID] = {
     id: newID,

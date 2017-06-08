@@ -12,7 +12,7 @@
       </li>
     </ul>
 
-    <% if (!user.id) {%>
+    <% if (!user) {%>
     <form action="/login" method="POST" class="form-inline">
     <div class="form-group pull-right" style="margin-top: 5pt; margin-right: 5pt">
       <input class="form-control" type="email" type="text" name="email" placeholder="E-mail" style="width: 300px">
@@ -22,7 +22,7 @@
     </form>
     <% } %>
 
-    <% if (user.id) {%>
+    <% if (user) {%>
     <form action="/logout" method="POST" class="form-inline">
     <div class="form-group pull-right" style="margin-top: 5pt; margin-right: 5pt">
       <label><%= user.email%></label>
