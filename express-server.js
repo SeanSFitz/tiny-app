@@ -53,6 +53,14 @@ function usersURLs (user) {
   return filteredURLs;
 };
 
+
+function makeValidURL (url) {
+  if ((url.slice(0,7) !== "https://") || (url.slice(0,6) !== "http://"))  {
+    url = "https://" + url;
+  }
+  return url;
+};
+
 app.set("view engine", "ejs");
 
 const bodyParser = require("body-parser");
@@ -64,14 +72,16 @@ app.use(cookieParser());
 app.use(express.static('public'));
 
 let urlDatabase = {
-  "b2xVn2": {
-    longURL: "http://www.lighthouselabs.ca",
-    userID: "b24x"
-  },
-  "9sm5xK": {
-    longURL: "http://www.google.com",
-    userID: "B5x22"
-  }
+  "1EB7Si": { longURL: 'https://www.lighthouselabs.com', userID: '32ysdZ' },
+  "95Pm9F": { longURL: 'https://www.test.com', userID: '32ysdZ' },
+  "vm5GQQ": { longURL: 'https://www.facebook.com', userID: '32ysdZ' },
+  "VbZydz": { longURL: 'https://www.reddit.com', userID: 'QbiDb4' },
+  "bBUm9b": { longURL: 'https://www.instagram.com', userID: 'QbiDb4' },
+  "r5FMC0":
+   { longURL: 'https://github.com/SeanSFitz/tiny-app',
+     userID: 'QbiDb4' },
+  "KTaRgu": { longURL: 'https://www.wikipedia.org', userID: 'QbiDb4' },
+  "XDYgdD": { longURL: 'https://www.snapchat.com', userID: 'DU8ks8' }
 };
 
 let users = {
@@ -153,7 +163,7 @@ app.get("/register", (req, res) => {
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = {
-    longURL: req.body.longURL,
+    longURL: makeValidURL(req.body.longURL),
     userID: req.cookies.userID
   };
   console.log(urlDatabase);
@@ -181,7 +191,7 @@ app.post("/urls/:shortURL", (req, res) => {
     res.redirect(`/urls/${req.params.shortURL}`);
     return;
   };
-  urlDatabase[req.params.shortURL].longURL = req.body.longURL;
+  urlDatabase[req.params.shortURL].longURL = makeValidURL(req.body.longURL);
   res.redirect(`/urls/${req.params.shortURL}`);
 });
 
