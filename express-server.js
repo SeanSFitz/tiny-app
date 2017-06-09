@@ -183,7 +183,9 @@ app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = {
     longURL: makeValidURL(req.body.longURL),
-    userID: req.session.userID
+    userID: req.session.userID,
+    visits: [],
+    visitors: []
   };
   res.redirect(`/urls/${shortURL}`);
 });
