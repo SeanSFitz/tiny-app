@@ -12,8 +12,8 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Shortened</th>
-        <th>Original</th>
+        <th class="text-center">Shortened</th>
+        <th class="text-center">Original</th>
       </tr>
     </thead>
     <tbody>
@@ -21,6 +21,10 @@
         <tr>
           <td><%= url %></td>
           <td><a href="<%= urls[url].longURL %>"><%= urls[url].longURL %></a></td>
+          <td>
+            <span style="margin-right: 5pt;" class="pull-left"><span class="glyphicon glyphicon-eye-open"></span> <span class="text-center"><%= urls[url].visits.length %></span></span>
+            <span><span class="glyphicon glyphicon-user"></span> <%= urls[url].visitors.length %></span>
+          </td>
           <td>
             <form method="GET" action="/urls/<%= url %>">
               <button class="btn btn-default" type="submit">Edit <span class="glyphicon glyphicon-pencil"></span></button>

@@ -8,13 +8,32 @@
 <body>
 <% include partials/_header %>
   <div class="FullPageContainer text-center">
-    <h1>Shortened URL: <%= shortURL %></h1>
+    <h1><%= shortURL %></h1>
+    <h2>Shortened URL: <a href="http://localhost:8080/u/<%= shortURL %>">http://localhost:8080/u/<%= shortURL %></a></h1>
     <h2>Original URL: <a href="<%= longURL %>"><%= longURL %></a></h2>
     <form action="/urls/<%= shortURL %>?_method=PUT" method="POST" style="margin:50px;">
       <label for="longURL">Enter a new URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px">
       <input type="submit" value="Update">
     </form>
+      <div>
+        <span class="glyphicon glyphicon-eye-open" style="margin-right: 5pt"></span> Link Visits: <%= visits.length %>
+      </div>
+      <div>
+        <span class="glyphicon glyphicon-user" style="margin-right: 5pt"></span> Unique Visitors: <%= visitors.length %>
+      </div>
+      <table class="table">
+      <tr>
+        <td><strong>Visitor ID</strong></td>
+        <td><strong>Timestamp</strong></td>
+      </tr>
+      <% for (let visit of visits) { %>
+        <tr>
+          <td><%= visit.visitorID %></td>
+          <td><%= visit.timestamp %></td>
+        </tr>
+      <% } %>
+      </table>
 </div>
 </body>
 </html>

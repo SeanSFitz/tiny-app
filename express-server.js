@@ -3,6 +3,7 @@ const methodOverride = require('method-override')
 const randomString = require('random-string');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
+const moment = require('moment');
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 
@@ -63,6 +64,14 @@ function makeValidURL (url) {
   return url;
 };
 
+function isUniqueVisitor(visitor, shortURL) {
+  if (urlDatabase[shortURL].visitors.indexOf(visitor) >= 0) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
 app.set("view engine", "ejs");
 
 const bodyParser = require("body-parser");
@@ -70,7 +79,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 var cookieSession = require('cookie-session');
 app.use(cookieSession({
-  name: 'userID',
+  name: 'session',
   secret: 'sean'
 }));
 
@@ -78,16 +87,16 @@ app.use(methodOverride('_method'))
 app.use(express.static('public'));
 
 let urlDatabase = {
-  "1EB7Si": { longURL: 'https://www.lighthouselabs.com', userID: '32ysdZ' },
-  "95Pm9F": { longURL: 'https://www.test.com', userID: '32ysdZ' },
-  "vm5GQQ": { longURL: 'https://www.facebook.com', userID: '32ysdZ' },
-  "VbZydz": { longURL: 'https://www.reddit.com', userID: 'QbiDb4' },
-  "bBUm9b": { longURL: 'https://www.instagram.com', userID: 'QbiDb4' },
+  "1EB7Si": { longURL: 'https://www.lighthouselabs.com', userID: '32ysdZ', visits: [], visitors: [] },
+  "95Pm9F": { longURL: 'https://www.test.com', userID: '32ysdZ', visits: [], visitors: [] },
+  "vm5GQQ": { longURL: 'https://www.facebook.com', userID: '32ysdZ', visits: [], visitors: [] },
+  "VbZydz": { longURL: 'https://www.reddit.com', userID: 'QbiDb4', visits: [], visitors: [] },
+  "bBUm9b": { longURL: 'https://www.instagram.com', userID: 'QbiDb4', visits: [], visitors: [] },
   "r5FMC0":
    { longURL: 'https://github.com/SeanSFitz/tiny-app',
-     userID: 'QbiDb4' },
-  "KTaRgu": { longURL: 'https://www.wikipedia.org', userID: 'QbiDb4' },
-  "XDYgdD": { longURL: 'https://www.snapchat.com', userID: 'DU8ks8' }
+     userID: 'QbiDb4', visits: [], visitors: [] },
+  "KTaRgu": { longURL: 'https://www.wikipedia.org', userID: 'QbiDb4', visits: [], visitors: [] },
+  "XDYgdD": { longURL: 'https://www.snapchat.com', userID: 'DU8ks8', visits: [], visitors: [] }
 };
 
 let users = {
@@ -154,6 +163,8 @@ app.get("/urls/:id", (req, res) => {
   let templateVars = {
     shortURL: req.params.id,
     longURL: urlDatabase[req.params.id].longURL,
+    visits: urlDatabase[req.params.id].visits,
+    visitors: urlDatabase[req.params.id].visitors,
     user: req.session.userID ? users[req.session.userID] : ''
   };
   res.render("urls_show", templateVars);
@@ -179,6 +190,15 @@ app.post("/urls", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL].longURL;
+  if (!req.session.visitorID) {
+    req.session.visitorID = generateRandomString();
+  }
+  if (isUniqueVisitor(req.session.visitorID, req.params.shortURL)) {
+    urlDatabase[req.params.shortURL].visitors.push(req.session.visitorID);
+  }
+  let time = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+  urlDatabase[req.params.shortURL].visits.push({visitorID: req.session.visitorID, timestamp: time});
+  console.log(urlDatabase[req.params.shortURL]);
   res.redirect(longURL);
 });
 
