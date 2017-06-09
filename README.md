@@ -15,6 +15,8 @@
 * express
 * random-string
 * validator
+* method-override
+* moment-timezone
 
 
 ## Getting Started
