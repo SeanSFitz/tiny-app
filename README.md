@@ -10,7 +10,7 @@
 ## Dependencies
 * bcrypt
 * body-parser
-* cookie-parser
+* cookie-session
 * ejs
 * express
 * random-string
