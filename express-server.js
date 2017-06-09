@@ -1,4 +1,5 @@
 const express = require("express");
+const methodOverride = require('method-override')
 const randomString = require('random-string');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
@@ -73,6 +74,7 @@ app.use(cookieSession({
   secret: 'sean'
 }));
 
+app.use(methodOverride('_method'))
 app.use(express.static('public'));
 
 let urlDatabase = {
@@ -180,7 +182,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-app.post("/urls/:shortURL/delete", (req, res) => {
+app.delete("/urls/:shortURL", (req, res) => {
   if (!belongsToUser(req.session.userID, req.params.shortURL)) {
     res.status(400);
     res.redirect(`/urls`);
@@ -190,7 +192,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect(`/urls`);
 });
 
-app.post("/urls/:shortURL", (req, res) => {
+app.put("/urls/:shortURL", (req, res) => {
   if (!belongsToUser(req.session.userID, req.params.shortURL)) {
     res.status(400);
     res.redirect(`/urls/${req.params.shortURL}`);

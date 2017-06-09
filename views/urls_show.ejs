@@ -10,7 +10,7 @@
   <div class="FullPageContainer text-center">
     <h1>Shortened URL: <%= shortURL %></h1>
     <h2>Original URL: <a href="<%= longURL %>"><%= longURL %></a></h2>
-    <form action="/urls/<%= shortURL %>" method="POST" style="margin:50px;">
+    <form action="/urls/<%= shortURL %>?_method=PUT" method="POST" style="margin:50px;">
       <label for="longURL">Enter a new URL:</label>
       <input id="longURL" type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px">
       <input type="submit" value="Update">
