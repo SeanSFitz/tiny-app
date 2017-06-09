@@ -3,7 +3,9 @@
 -TinyApp is a full-stack web application built with Node and Express that stores user information and allows them to shorten URLs
 
 ## Final Product
-![alt text](https://github.com/SeanSFitz/tiny-app/blob/master/Screen%20Shot%202017-06-08%20at%208.43.15%20PM.png "Logo Title Text 1")
+![index](https://github.com/SeanSFitz/tiny-app/blob/master/Screen%20Shot%202017-06-09%20at%202.49.55%20PM.png "Index")
+![user page](https://github.com/SeanSFitz/tiny-app/blob/master/Screen%20Shot%202017-06-09%20at%202.50.21%20PM.png "User Page")
+
 
 ## Dependencies
 * bcrypt
