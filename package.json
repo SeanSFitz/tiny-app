@@ -25,6 +25,7 @@
     "express": "^4.15.3",
     "method-override": "^2.3.9",
     "moment": "^2.18.1",
+    "moment-timezone": "^0.5.13",
     "random-string": "^0.2.0",
     "validator": "^7.0.0"
   }

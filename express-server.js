@@ -3,7 +3,7 @@ const methodOverride = require('method-override')
 const randomString = require('random-string');
 const validator = require('validator');
 const bcrypt = require('bcrypt');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 
@@ -196,9 +196,8 @@ app.get("/u/:shortURL", (req, res) => {
   if (isUniqueVisitor(req.session.visitorID, req.params.shortURL)) {
     urlDatabase[req.params.shortURL].visitors.push(req.session.visitorID);
   }
-  let time = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
+  let time = moment.tz("America/Toronto").format('llll');
   urlDatabase[req.params.shortURL].visits.push({visitorID: req.session.visitorID, timestamp: time});
-  console.log(urlDatabase[req.params.shortURL]);
   res.redirect(longURL);
 });
 
@@ -239,7 +238,7 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  req.session = null;
+  req.session.userID = null;
   res.redirect(`/`);
 });
 
