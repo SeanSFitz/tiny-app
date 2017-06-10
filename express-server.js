@@ -119,7 +119,16 @@ let users = {
 
 app.get("/", (req, res) => {
   let templateVars = {
-    user: req.session.userID ? users[req.session.userID] : ''
+    user: req.session.userID ? users[req.session.userID] : '',
+    invalid: false
+  };
+  res.render("home", templateVars);
+});
+
+app.get("/login/invalid", (req, res) => {
+  let templateVars = {
+    user: req.session.userID ? users[req.session.userID] : '',
+    invalid: true
   };
   res.render("home", templateVars);
 });
@@ -174,7 +183,16 @@ app.get("/urls/:id", (req, res) => {
 
 app.get("/register", (req, res) => {
     let templateVars = {
-    user: req.session.userID ? users[req.session.userID] : ''
+    user: req.session.userID ? users[req.session.userID] : '',
+    invalid: false
+  };
+  res.render("register", templateVars);
+});
+
+app.get("/register/invalid", (req, res) => {
+    let templateVars = {
+    user: req.session.userID ? users[req.session.userID] : '',
+    invalid: true
   };
   res.render("register", templateVars);
 });
@@ -227,12 +245,12 @@ app.post("/login", (req, res) => {
   let userInfo = getUserInfo(req.body.email);
   if (!userInfo) {
     res.status(403);
-    res.redirect('/');
+    res.redirect('/login/invalid');
     return;
   }
   if (!bcrypt.compareSync(req.body.password, userInfo.password)) {
     res.status(403);
-    res.redirect('/');
+    res.redirect('/login/invalid');
     return;
   }
   req.session.userID = userInfo.id;
@@ -247,7 +265,7 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
   if (!validator.isEmail(req.body.email) || req.body.password === '' || isEmailInUse(req.body.email)) {
     res.status(400);
-    res.redirect('/register');
+    res.redirect('/register/invalid');
     return;
   };
 

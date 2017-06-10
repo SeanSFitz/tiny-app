@@ -3,7 +3,7 @@
 <head>
   <title>TinyApp</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
   <% include partials/_header %>
@@ -19,6 +19,10 @@
     <label for="password">Password</label>
     <input type="password" class="form-control" name="password" placeholder="Password">
   </div>
+  <% if (invalid) { %>
+  <div class="text-center" style="margin-bottom: 10pt; color: red;">Invalid e-mail or password, or e-mail is already in use.</div>
+  <% } %>
+
   <div class="text-center"><button type="submit" class="btn btn-default">Register</button></div>
   </div>
   </div>
