@@ -15,7 +15,7 @@ function generateRandomString() {
 
 function getUserInfo(email) {
   for (let user in users) {
-    if (users[user].email === email) {
+    if (users[user].email.toLowerCase() === email.toLowerCase()) {
       return users[user];
     }
   }
